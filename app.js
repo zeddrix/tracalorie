@@ -231,6 +231,13 @@ const App = ((ItemCtrl, UICtrl) => {
     document
       .querySelector(UISelectors.updateBtn)
       .addEventListener("click", itemUpdateSubmit);
+
+    document
+      .querySelector(UISelectors.backBtn)
+      .addEventListener("click", (e) => {
+        UICtrl.clearEditState();
+        e.preventDefault();
+      });
   };
 
   return {

@@ -1,5 +1,5 @@
 const ItemCtrl = (() => {
-  const Item = (id, name, calories) => {
+  const Item = function (id, name, calories) {
     this.id = id;
     this.name = name;
     this.calories = calories;
@@ -21,6 +21,18 @@ const ItemCtrl = (() => {
     },
     addItem: (name, calories) => {
       console.log(name, calories);
+      let ID;
+      if (data.items.length > 0) {
+        ID = data.items[data.items.length - 1].id + 1;
+      } else {
+        ID = 0;
+      }
+
+      calories = parseInt(calories);
+
+      newItem = new Item(ID, name, calories);
+      data.items.push(newItem);
+      return newItem;
     },
     logData: () => {
       return data;

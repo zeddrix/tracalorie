@@ -6,11 +6,7 @@ const ItemCtrl = (() => {
   };
 
   const data = {
-    items: [
-      // { id: 0, name: "Steak Dinner", calories: 1200 },
-      // { id: 1, name: "Cookie", calories: 400 },
-      // { id: 2, name: "Eggs", calories: 300 },
-    ],
+    items: [],
     currentItem: null,
     totalCalories: 0,
   };
@@ -18,7 +14,6 @@ const ItemCtrl = (() => {
   return {
     getItems: () => data.items,
     addItem: (name, calories) => {
-      console.log(name, calories);
       let ID;
       if (data.items.length > 0) {
         ID = data.items[data.items.length - 1].id + 1;
@@ -58,6 +53,9 @@ const ItemCtrl = (() => {
       const index = ids.indexOf(id);
       data.items.splice(index, 1);
     },
+    clearAllItems: () => {
+      data.items = [];
+    },
     setCurrentItem: (item) => (data.currentItem = item),
     getCurrentItem: () => data.currentItem,
     getTotalCalories: () => {
@@ -81,6 +79,7 @@ const UICtrl = (() => {
     updateBtn: ".update-btn",
     deleteBtn: ".delete-btn",
     backBtn: ".back-btn",
+    clearBtn: ".clear-btn",
     itemNameInput: "#item-name",
     itemCaloriesInput: "#item-calories",
     totalCalories: ".total-calories",
@@ -151,6 +150,14 @@ const UICtrl = (() => {
         UISelectors.itemCaloriesInput
       ).value = ItemCtrl.getCurrentItem().calories;
       UICtrl.showEditState();
+    },
+    removeItems: () => {
+      let listItems = document.querySelectorAll(UISelectors.listItems);
+      listItems = Array.from(listItems);
+
+      listItems.forEach((item) => {
+        item.remove();
+      });
     },
     showTotalCalories: (totalCalories) => {
       document.querySelector(
@@ -232,6 +239,16 @@ const App = ((ItemCtrl, UICtrl) => {
     e.preventDefault();
   };
 
+  const clearAllItemsClick = (e) => {
+    ItemCtrl.clearAllItems();
+    UICtrl.removeItems();
+
+    const totalCalories = ItemCtrl.getTotalCalories();
+    UICtrl.showTotalCalories(totalCalories);
+
+    e.preventDefault();
+  };
+
   const loadEventListeners = () => {
     const UISelectors = UICtrl.getSelectors();
 
@@ -264,6 +281,10 @@ const App = ((ItemCtrl, UICtrl) => {
         UICtrl.clearEditState();
         e.preventDefault();
       });
+
+    document
+      .querySelector(UISelectors.clearBtn)
+      .addEventListener("click", clearAllItemsClick);
   };
 
   return {
@@ -271,7 +292,6 @@ const App = ((ItemCtrl, UICtrl) => {
       UICtrl.clearEditState();
 
       const items = ItemCtrl.getItems();
-      console.log(items);
 
       UICtrl.populateItemList(items);
 

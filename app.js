@@ -19,6 +19,9 @@ const ItemCtrl = (() => {
     getItems: () => {
       return data.items;
     },
+    addItem: (name, calories) => {
+      console.log(name, calories);
+    },
     logData: () => {
       return data;
     },
@@ -28,6 +31,9 @@ const ItemCtrl = (() => {
 const UICtrl = (() => {
   const UISelectors = {
     itemList: "#item-list",
+    addBtn: ".add-btn",
+    itemNameInput: "#item-name",
+    itemCaloriesInput: "#item-calories",
   };
 
   return {
@@ -45,16 +51,45 @@ const UICtrl = (() => {
 
       document.querySelector(UISelectors.itemList).innerHTML = html;
     },
+
+    getItemInput: () => {
+      return {
+        name: document.querySelector(UISelectors.itemNameInput).value,
+        calories: document.querySelector(UISelectors.itemCaloriesInput).value,
+      };
+    },
+    getSelectors: () => UISelectors,
   };
 })();
 
 const App = ((ItemCtrl, UICtrl) => {
+  const itemAddSubmit = (e) => {
+    const input = UICtrl.getItemInput();
+
+    if (input.name !== "" && input.calories !== "") {
+      const newItem = ItemCtrl.addItem(input.name, input.calories);
+    } else {
+    }
+
+    e.preventDefault();
+  };
+
+  const loadEventListeners = () => {
+    const UISelectors = UICtrl.getSelectors();
+
+    document
+      .querySelector(UISelectors.addBtn)
+      .addEventListener("click", itemAddSubmit);
+  };
+
   return {
     init: () => {
       const items = ItemCtrl.getItems();
       console.log(items);
 
       UICtrl.populateItemList(items);
+
+      loadEventListeners();
     },
   };
 })(ItemCtrl, UICtrl);
